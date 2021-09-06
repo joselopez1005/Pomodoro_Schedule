@@ -6,5 +6,6 @@ data class TaskEntry (
     val priority: String,
     val pomodoroRepetitions: Int,
     val pomodoroIntervals: Int,
-    val pomodoroBreakAmount: Int
+    val pomodoroBreakAmount: Int,
+    val timeRemaining: Int
 )
