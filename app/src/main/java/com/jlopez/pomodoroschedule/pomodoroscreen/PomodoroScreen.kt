@@ -4,6 +4,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -14,18 +15,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.jlopez.pomodoroschedule.R
 import com.jlopez.pomodoroschedule.model.TaskEntry
-import com.jlopez.pomodoroschedule.ui.theme.LightContainerGray
-import com.jlopez.pomodoroschedule.ui.theme.MainFontColor
-import com.jlopez.pomodoroschedule.ui.theme.UnselectedGrayColor
+import com.jlopez.pomodoroschedule.ui.theme.*
 import com.jlopez.pomodoroschedule.util.parseTaskColor
 import com.jlopez.pomodoroschedule.util.parseTaskColorBorder
+import java.util.*
 
 @Composable
 fun PomodoroScreen() {
@@ -115,7 +122,7 @@ fun CurrentTaskSection(
                         tint = UnselectedGrayColor,
                         modifier = Modifier
                             .padding(start = 15.dp)
-                            .clickable {  }
+                            .clickable { }
                             .size(30.dp)
 
                     )
@@ -123,6 +130,75 @@ fun CurrentTaskSection(
             }
         }
     }
+}
+
+@Composable
+fun PomodoroTimerSection(
+    pomodoroViewModel: PomodoroScreenViewModel,
+    modifier: Modifier = Modifier
+) {
+    
+}
+
+@Composable
+fun PomodoroTimerSectionDesignLogic(
+    modifier: Modifier = Modifier
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .background(
+                Brush.sweepGradient(
+                    listOf(
+                        BackgroundGray,
+                        LightContainerGray,
+                        BackgroundGray
+                    )
+                )
+            )
+    ){
+        Canvas(modifier = Modifier
+            .padding(15.dp)
+            .size(300.dp)
+        ) {
+            drawCircle(
+                color = TimerBackground,
+                radius = 450f
+            )
+            drawCircle(
+                color = TimerInactiveIndicationColor,
+                radius = 390f,
+                style = Stroke(
+                    width = 13.dp.toPx()
+                )
+            )
+            drawArc(
+                color = TimerActiveIndicationColor,
+                startAngle = 90f,
+                sweepAngle = 180f,
+                useCenter = false,
+                topLeft = Offset(20f, 20f),
+                size = Size(780f,780f),
+                style = Stroke(
+                    width = 13.dp.toPx(),
+                    cap = StrokeCap.Round
+                )
+            )
+        }
+        Text(
+            text = "21:05",
+            style = MaterialTheme.typography.body1,
+            color = MainFontColor,
+            fontWeight = FontWeight.Bold,
+            fontSize = 70.sp
+        )
+    }
+}
+
+@Preview
+@Composable
+fun PomodoroTimerSectionPreview() {
+    PomodoroTimerSectionDesignLogic(Modifier.fillMaxWidth())
 }
 
 @Preview

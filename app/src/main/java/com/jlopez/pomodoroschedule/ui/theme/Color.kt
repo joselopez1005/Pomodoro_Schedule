@@ -24,3 +24,8 @@ val SelectedBlueColor = Color(0xFF6E7DFF)
 val UnselectedBlueColor = Color(0xFF37384C)
 val UnselectedBlueTextColor = Color(0xFF7781D2)
 val UnselectedGrayColor = Color(0xFF5F5F5F)
+
+//Timer
+val TimerBackground = Color(0xFF2D2D2D)
+val TimerActiveIndicationColor = Color(0xFF6E7DFF)
+val TimerInactiveIndicationColor = Color(0xFF373737)
