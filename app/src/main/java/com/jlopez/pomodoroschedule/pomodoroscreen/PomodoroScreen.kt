@@ -4,13 +4,9 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -18,9 +14,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -33,14 +27,42 @@ import com.jlopez.pomodoroschedule.ui.theme.*
 import com.jlopez.pomodoroschedule.util.parseTaskColor
 import com.jlopez.pomodoroschedule.util.parseTaskColorBorder
 import java.util.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
+
+val viewModel: PomodoroScreenViewModel = PomodoroScreenViewModel()
 
 @Composable
 fun PomodoroScreen() {
     Surface(
-        color = MaterialTheme.colors.surface,
+        color = MaterialTheme.colors.background,
         modifier = Modifier.fillMaxSize()
     ) {
-
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.height(100.dp))
+            CurrentTaskSection(
+                entry = TaskEntry(
+                    taskName = "Mobile App Development",
+                    description = "Work on app development",
+                    priority = "High",
+                    pomodoroRepetitions = 4,
+                    pomodoroIntervals = 4,
+                    pomodoroBreakAmount = 15,
+                    timeRemaining = 30
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(50.dp))
+            PomodoroTimerSectionDesignLogic(
+                modifier= Modifier
+                    .clip(RoundedCornerShape(100))
+                    .shadow(elevation = 10.dp, shape = RoundedCornerShape(100))
+            )
+            Spacer(modifier = Modifier.height(80.dp))
+            PomodoroTimerButtonSection(modifier = Modifier.fillMaxWidth())
+        }
     }
 }
 
@@ -144,12 +166,16 @@ fun PomodoroTimerSection(
 fun PomodoroTimerSectionDesignLogic(
     modifier: Modifier = Modifier
 ) {
+    val currentPercentage: Float by viewModel.currentPercentage.observeAsState(1f)
+    val timeInText: String by viewModel.timeInText.observeAsState("25:00")
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
             .background(
                 Brush.sweepGradient(
                     listOf(
+                        BackgroundGray,
+                        BackgroundGray,
                         BackgroundGray,
                         LightContainerGray,
                         BackgroundGray
@@ -175,9 +201,9 @@ fun PomodoroTimerSectionDesignLogic(
             drawArc(
                 color = TimerActiveIndicationColor,
                 startAngle = 90f,
-                sweepAngle = 180f,
+                sweepAngle = 380f * currentPercentage,
                 useCenter = false,
-                topLeft = Offset(20f, 20f),
+                topLeft = Offset(this.center.x - 390f, this.center.y - 390f),
                 size = Size(780f,780f),
                 style = Stroke(
                     width = 13.dp.toPx(),
@@ -186,13 +212,64 @@ fun PomodoroTimerSectionDesignLogic(
             )
         }
         Text(
-            text = "21:05",
+            text = timeInText,
             style = MaterialTheme.typography.body1,
             color = MainFontColor,
             fontWeight = FontWeight.Bold,
             fontSize = 70.sp
         )
     }
+}
+
+
+
+@Composable
+fun PomodoroTimerButtonSection(
+    modifier: Modifier = Modifier
+) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ){
+        Button(
+            onClick = { /*TODO*/ },
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = UnselectedBlueColor
+            ),
+            modifier = Modifier
+                .padding(10.dp)
+                .clip(RoundedCornerShape(10.dp))
+        ) {
+            Text(
+                text = "Stop",
+                color = SelectedBlueColor,
+                style = MaterialTheme.typography.body1,
+                modifier = Modifier.padding(horizontal = 40.dp, vertical = 5.dp)
+            )
+        }
+        Button(
+            onClick = { viewModel.handlePomodoroTimer() },
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = SelectedBlueColor
+            ),
+            modifier = Modifier
+                .padding(10.dp)
+                .clip(RoundedCornerShape(10.dp))
+        ) {
+            Text(
+                text = "Start",
+                color = MainFontColor,
+                style = MaterialTheme.typography.body1,
+                modifier = Modifier.padding(horizontal = 40.dp, vertical = 5.dp)
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun PomodoroTimerButtonSectionPreview(){
+    PomodoroTimerButtonSection()
 }
 
 @Preview
