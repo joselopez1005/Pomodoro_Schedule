@@ -29,11 +29,19 @@ import com.jlopez.pomodoroschedule.util.parseTaskColorBorder
 import java.util.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.navigation.NavController
 
 val viewModel: PomodoroScreenViewModel = PomodoroScreenViewModel()
-
 @Composable
-fun PomodoroScreen() {
+fun PomodoroScreen(
+    taskName:String,
+    priority: String,
+    isNewTask: Boolean,
+    navController: NavController
+) {
+    val currentTask = remember {
+        viewModel.createTaskEntry(taskName = taskName, priority = priority, isNewTask = isNewTask)
+    }
     Surface(
         color = MaterialTheme.colors.background,
         modifier = Modifier.fillMaxSize()
@@ -44,16 +52,17 @@ fun PomodoroScreen() {
             Spacer(modifier = Modifier.height(100.dp))
             CurrentTaskSection(
                 entry = TaskEntry(
-                    taskName = "Mobile App Development",
+                    taskName = currentTask.taskName,
                     description = "Work on app development",
-                    priority = "High",
+                    priority = currentTask.priority,
                     pomodoroRepetitions = 4,
-                    pomodoroIntervals = 4,
+                    pomodoroIntervals = 25,
                     pomodoroBreakAmount = 15,
                     timeRemaining = 30
                 ),
                 modifier = Modifier.fillMaxWidth()
             )
+
             Spacer(modifier = Modifier.height(50.dp))
             PomodoroTimerSectionDesignLogic(
                 modifier= Modifier

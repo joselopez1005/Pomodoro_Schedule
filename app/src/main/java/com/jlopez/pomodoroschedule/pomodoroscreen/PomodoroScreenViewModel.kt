@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jlopez.pomodoroschedule.model.TaskEntry
 import com.jlopez.pomodoroschedule.util.Utility
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.Job
@@ -29,7 +30,15 @@ class PomodoroScreenViewModel: ViewModel() {
     private val _timeInText = MutableLiveData("25:00")
     val timeInText: LiveData<String> = _timeInText
 
-
+    private var taskEntry= TaskEntry(
+        taskName = "Default name",
+        description = "default description",
+        priority = "Low",
+        pomodoroRepetitions = 4,
+        pomodoroIntervals = 25,
+        pomodoroBreakAmount = 5,
+        timeRemaining = 30
+    )
 
     fun handlePomodoroTimer() {
         if(_isTimerRunning.value!!) {
@@ -61,9 +70,20 @@ class PomodoroScreenViewModel: ViewModel() {
         }
     }
 
-    private fun handleTimerValues(isRunning: Boolean, timeText: String, progress: Float) {
-        _isTimerRunning.value = isRunning
-        _timeInText.value = timeText
-        _currentPercentage.value = progress
+    fun createTaskEntry(taskName: String, priority: String, isNewTask: Boolean): TaskEntry {
+        return if(isNewTask) {
+            taskEntry = TaskEntry(
+                taskName = taskName,
+                priority = priority,
+                description = "Test",
+                pomodoroRepetitions = 4,
+                pomodoroIntervals = 15,
+                pomodoroBreakAmount = 5,
+                timeRemaining = 30
+            )
+            taskEntry
+        } else {
+            taskEntry
+        }
     }
 }

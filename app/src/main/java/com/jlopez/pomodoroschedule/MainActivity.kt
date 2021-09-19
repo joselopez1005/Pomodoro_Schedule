@@ -11,7 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.jlopez.pomodoroeffeciencytracker.taskmanagementscreen.TaskManagementScreen
+import com.jlopez.pomodoroschedule.addtaskscreem.AddTaskScreen
 import com.jlopez.pomodoroschedule.bottomnavigation.BottomNavigationBar
+import com.jlopez.pomodoroschedule.bottomnavigation.Navigation
 import com.jlopez.pomodoroschedule.pomodoroscreen.PomodoroScreen
 import com.jlopez.pomodoroschedule.ui.theme.PomodoroScheduleTheme
 
@@ -20,10 +22,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             PomodoroScheduleTheme {
+                val navController = rememberNavController()
                 Scaffold(
-                    bottomBar = { BottomNavigationBar()}
+                    bottomBar = { BottomNavigationBar(navController)}
                 ) {
-                    TaskManagementScreen()
+                    AddTaskScreen()
+                    //Navigation(navController)
 
                 }
             }

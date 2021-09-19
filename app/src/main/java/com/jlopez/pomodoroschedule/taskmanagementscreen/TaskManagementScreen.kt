@@ -1,6 +1,7 @@
 package com.jlopez.pomodoroeffeciencytracker.taskmanagementscreen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -13,11 +14,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.jlopez.pomodoroschedule.bottomnavigation.BottomNavigationScreens
 import com.jlopez.pomodoroschedule.model.TaskEntry
 import com.jlopez.pomodoroschedule.pomodoroscreen.CurrentTaskSection
 import com.jlopez.pomodoroschedule.ui.theme.BackgroundGray
@@ -26,9 +30,11 @@ import com.jlopez.pomodoroschedule.ui.theme.MainFontColor
 import com.jlopez.pomodoroschedule.ui.theme.SelectedBlueColor
 
 @Composable
-fun TaskManagementScreen() {
+fun TaskManagementScreen(
+    navController: NavController
+) {
     Surface(
-        color = MaterialTheme.colors.surface,
+        color = MaterialTheme.colors.background,
         modifier = Modifier.fillMaxSize()
     ){
         Column {
@@ -87,6 +93,7 @@ fun TaskManagementScreen() {
                                 timeRemaining = 5
                             ),
                         ),
+                        navController = navController,
                         modifier = Modifier.fillMaxWidth()
 
                     )
@@ -195,6 +202,7 @@ fun TaskOverviewSection(
 @Composable
 fun AllTasksSections(
     listOfTasks: List<TaskEntry>,
+    navController: NavController,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -202,7 +210,16 @@ fun AllTasksSections(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         itemsIndexed(listOfTasks){ index, item ->
-            CurrentTaskSection(entry = item)
+            CurrentTaskSection(entry = item,
+                modifier = Modifier.clickable {
+                    var navRoute = BottomNavigationScreens.Pomodoro.route
+                    navRoute = navRoute.replace("{taskName}", item.taskName)
+                    navRoute = navRoute.replace("{priority}", item.priority)
+                    navRoute = navRoute.replace("{isNewTask}", "true")
+                    navController.navigate(
+                        navRoute
+                    )
+                })
         }
     }
 }
